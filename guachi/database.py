@@ -1,27 +1,29 @@
-#!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
-import os.path,UserDict
+import os.path
 from sqlite3 import dbapi2 as sqlite
 
 class dbdict(dict):
-    ''' dbdict, a dictionnary-like object for large datasets (several Tera-bytes) '''
     
-    def __init__(self,dictName):
+    def __init__(self, path, table='data'):
         dict.__init__(self)
-        self.db_filename = "dbdict_%s.sqlite" % dictName
+        self.table = 'data'
+        self.db_filename = path
         if not os.path.isfile(self.db_filename):
             self.con = sqlite.connect(self.db_filename)
             self.con.execute("create table data (key PRIMARY KEY,value)")
         else:
             self.con = sqlite.connect(self.db_filename)
 
+        self.select_value = "SELECT value FROM %s WHERE key=?" % self.table 
+        self.select_key = "SELECT key FROM %s WHERE key=?" % self.table 
+        self.update_value = "UPDATE %s SET value=? where key=?" % self.table
+        self.insert_key = "INSERT INTO %s (key,value) where key=?" % self.table 
+        self.delete_key = "DELETE FROM %s WHERE KEY=?" % self.table
+
+
     def __getitem__(self, key):
-        if not key:
-            return "not key!"
-        else:
-            row = self.con.execute("select value from data where key=?",(key,)).fetchone()
-            if not row: raise KeyError
-            return row[0]
+        row = self.con.execute("select value from data where key=?",(key,)).fetchone()
+        if not row: raise KeyError
+        return row[0]
     
     def __setitem__(self, key, item):
         if self.con.execute("select key from data where key=?",(key,)).fetchone():
@@ -40,3 +42,10 @@ class dbdict(dict):
              
     def keys(self):
         return [row[0] for row in self.con.execute("select key from data").fetchall()]
+
+    def _integrity_check(self):
+        """Make sure we are doing OK"""
+        integrity = self.con.execute("pragma integrity_check").fetchone()
+        if integrity == (u'ok',):
+            return True
+        return False
