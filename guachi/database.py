@@ -15,9 +15,9 @@ class dbdict(dict):
 
         self.select_value = "SELECT value FROM %s WHERE key=?" % self.table 
         self.select_key = "SELECT key FROM %s WHERE key=?" % self.table 
-        self.update_value = "UPDATE %s SET value=? where key=?" % self.table
-        self.insert_key = "INSERT INTO %s (key,value) where key=?" % self.table 
-        self.delete_key = "DELETE FROM %s WHERE KEY=?" % self.table
+        self.update_value = "UPDATE %s SET value=? WHERE key=?" % self.table
+        self.insert_key = "INSERT INTO %s (key,value) WHERE key=?" % self.table 
+        self.delete_key = "DELETE FROM %s WHERE key=?" % self.table
 
 
     def __getitem__(self, key):
