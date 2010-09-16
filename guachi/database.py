@@ -1,6 +1,10 @@
 import os.path
 import sqlite3
 
+BASE = """CREATE TABLE data (key PRIMARY KEY, value)"""
+OPT_MAP = """CREATE TABLE _guachi_options (key PRIMARY KEY, value)"""
+DEF_MAP = """CREATE TABLE _guachi_defaults (key PRIMARY KEY, value)""" 
+
 class dbdict(dict):
     
     def __init__(self, path, table='data'):
@@ -9,7 +13,9 @@ class dbdict(dict):
         self.db_filename = path
         if not os.path.isfile(self.db_filename):
             self.con = sqlite3.connect(self.db_filename)
-            self.con.execute("create table data (key PRIMARY KEY,value)")
+            self.con.execute(BASE)
+            self.con.execute(OPT_MAP)
+            self.con.execute(DEF_MAP)
         else:
             self.con = sqlite3.connect(self.db_filename)
 

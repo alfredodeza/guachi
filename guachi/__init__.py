@@ -1,9 +1,5 @@
 import os
 
-BASE = """CREATE TABLE data (key PRIMARY KEY, value)"""
-OPT_MAP = """CREATE TABLE _guachi_option (key PRIMARY KEY, value)"""
-DEF_MAP = """CREATE TABLE _guachi_defaults (key PRIMARY KEY, value)""" 
-
 class Mapper(object):
 
     def __init__(self, path):
