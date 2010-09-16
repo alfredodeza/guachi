@@ -25,6 +25,7 @@ class dbdict(dict):
         self.insert_key_value = "INSERT INTO %s (key,value) VALUES (?,?)" % self.table 
         self.delete_key = "DELETE FROM %s WHERE key=?" % self.table
         self.select_keys = "SELECT key from %s" % self.table
+        self.select_all = "SELECT * from %s" % self.table
 
     def __getitem__(self, key):
         row = self.con.execute(self.select_value,(key,)).fetchone()
@@ -52,6 +53,16 @@ class dbdict(dict):
              
     def keys(self):
         return [row[0] for row in self.con.execute(self.select_keys).fetchall()]
+
+
+    def get_all(self):
+        """If you need to get absolutely everything at once - ugh.
+        This can get really expensive and defeats the purpose but oh well"""
+        dict_all = {}
+        for key, value in self.con.execute(self.select_all):
+            dict_all[key] = value 
+        return dict_all
+
 
     def _integrity_check(self):
         """Make sure we are doing OK"""

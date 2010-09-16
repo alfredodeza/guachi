@@ -1,4 +1,5 @@
 from guachi.database import dbdict
+from guachi import config
 import os
 
 class ConfigMapper(object):
@@ -19,9 +20,27 @@ class ConfigMapper(object):
         for key, value in dictionary.items():
             db[key] = value
 
+    def set_config(self, configuration=None):
+        """Accepts a dictionary or a file to set persistent configurations"""
+        # First make sure that whatever we get, gets translated
+        # into a dictionary 
+        dict_config = config.options(configuration)
+
+        if len(dict_config) > 0:
+            db = dbdict(self.path)
+            for key, value in dict_config.items():
+                db[key] = value 
+
+
     def integrity_check(self):
         """Verify the database is OK"""
         pass
+
+
+    def configuration(self):
+        """Returns the full stored configuration values as a dictionary"""
+        pass
+
 
     def _path_verify(self, path):
         """The need to have valid absolute paths"""

@@ -1,6 +1,5 @@
 from ConfigParser import ConfigParser
 from os.path import isfile
-from pacha.database import Worker
 
 def options(config=None, mapped_options={}, mapped_defaults={}):
     """Instead of calling ConfigParser all over the place
@@ -48,6 +47,7 @@ def options(config=None, mapped_options={}, mapped_defaults={}):
 
     return configuration
 
+
 def defaults(config=None, mapped_defaults={}):
     """From the config dictionary it checks missing values and
     adds the defaul ones for them if any"""
@@ -62,9 +62,3 @@ def defaults(config=None, mapped_defaults={}):
         except KeyError:
             config[key] = defaults[key]
     return config
-
-def stored_conf():
-    db = Worker()
-    db_config = db.get_full_config() 
-    return defaults(db_config)
-
