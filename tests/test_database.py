@@ -23,7 +23,7 @@ class TestDbdict(unittest.TestCase):
         self.assertEqual(foo.select_value, 'SELECT value FROM data WHERE key=?')
         self.assertEqual(foo.select_key, 'SELECT key FROM data WHERE key=?')
         self.assertEqual(foo.update_value, 'UPDATE data SET value=? WHERE key=?')
-        self.assertEqual(foo.insert_key, 'INSERT INTO data (key,value) WHERE key=?')
+        self.assertEqual(foo.insert_key_value, 'INSERT INTO data (key,value) VALUES (?,?)')
         self.assertEqual(foo.delete_key, 'DELETE FROM data WHERE key=?')
 
     def test_get_item_keyerror(self):

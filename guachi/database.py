@@ -17,13 +17,12 @@ class dbdict(dict):
         self.select_value = "SELECT value FROM %s WHERE key=?" % self.table 
         self.select_key = "SELECT key FROM %s WHERE key=?" % self.table 
         self.update_value = "UPDATE %s SET value=? WHERE key=?" % self.table
-        self.insert_key = "INSERT INTO %s (key,value) WHERE key=?" % self.table 
+        self.insert_key_value = "INSERT INTO %s (key,value) VALUES (?,?)" % self.table 
         self.delete_key = "DELETE FROM %s WHERE key=?" % self.table
 
 
     def __getitem__(self, key):
         row = self.con.execute(self.select_value,(key,)).fetchone()
-#        row = self.con.execute("select value from data where key=?",(key,)).fetchone()
         if not row: raise KeyError
         return row[0]
     
@@ -32,11 +31,7 @@ class dbdict(dict):
             if self.con.execute(self.select_key, (key,)).fetchone():
                 self.con.execute(self.update_value, (item,key))
             else:
-                self.con.execute("insert into data (key,value) values (?,?)",(key, item))
-#        if self.con.execute("select key from data where key=?",(key,)).fetchone():
-#            self.con.execute("update data set value=? where key=?",(item,key))
-#        else:
-#            self.con.execute("insert into data (key,value) values (?,?)",(key, item))
+                self.con.execute(self.insert_key_value,(key, item))
         except sqlite3.InterfaceError, e:
             raise sqlite3.InterfaceError(e)
 
@@ -44,10 +39,8 @@ class dbdict(dict):
         return dict.__setitem__(self, key, item)
                
     def __delitem__(self, key):
-        if self.con.execute("select key from data where key=?",(key,)).fetchone():
-            self.con.execute("delete from data where key=?",(key,))
-#        if self.con.execute("select key from data where key=?",(key,)).fetchone():
-#            self.con.execute("delete from data where key=?",(key,))
+        if self.con.execute(self.select_key ,(key,)).fetchone():
+            self.con.execute(self.delete_key ,(key,))
             self.con.commit()
         else:
              raise KeyError
