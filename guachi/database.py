@@ -9,7 +9,7 @@ class dbdict(dict):
     
     def __init__(self, path, table='data'):
         dict.__init__(self)
-        self.table = 'data'
+        self.table = table
         self.db_filename = path
         if not os.path.isfile(self.db_filename):
             self.con = sqlite3.connect(self.db_filename)
@@ -24,7 +24,7 @@ class dbdict(dict):
         self.update_value = "UPDATE %s SET value=? WHERE key=?" % self.table
         self.insert_key_value = "INSERT INTO %s (key,value) VALUES (?,?)" % self.table 
         self.delete_key = "DELETE FROM %s WHERE key=?" % self.table
-
+        self.select_keys = "SELECT key from %s" % self.table
 
     def __getitem__(self, key):
         row = self.con.execute(self.select_value,(key,)).fetchone()
@@ -51,7 +51,7 @@ class dbdict(dict):
              raise KeyError
              
     def keys(self):
-        return [row[0] for row in self.con.execute("select key from data").fetchall()]
+        return [row[0] for row in self.con.execute(self.select_keys).fetchall()]
 
     def _integrity_check(self):
         """Make sure we are doing OK"""

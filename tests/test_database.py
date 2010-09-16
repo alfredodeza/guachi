@@ -26,6 +26,11 @@ class TestDbdict(unittest.TestCase):
         self.assertEqual(foo.insert_key_value, 'INSERT INTO data (key,value) VALUES (?,?)')
         self.assertEqual(foo.delete_key, 'DELETE FROM data WHERE key=?')
 
+    def test_init_guachi_table(self):
+        """Make sure we can check other tables"""
+        foo = database.dbdict('/tmp/test_guachi', table='_guachi_options')
+        self.assertEqual(foo.table, '_guachi_options')
+
     def test_get_item_keyerror(self):
         foo = database.dbdict('/tmp/test_guachi')
         self.assertRaises(KeyError, foo.__getitem__, 'meh')
