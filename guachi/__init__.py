@@ -31,15 +31,24 @@ class ConfigMapper(object):
             for key, value in dict_config.items():
                 db[key] = value 
 
+    def stored(self):
+        """Access the DB directly for pay-as-you-go configuration needs
+        You get an empty dict but with access to any keys when requested
+        """
+        db = dbdict(self.path)
+        return db
+
 
     def integrity_check(self):
         """Verify the database is OK"""
-        pass
+        db = dbdict(self.path)
+        db._integrity_check()
 
 
     def configuration(self):
         """Returns the full stored configuration values as a dictionary"""
-        pass
+        db = dbdict(self.path)
+        return db.get_all()
 
 
     def _path_verify(self, path):
