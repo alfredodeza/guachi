@@ -1,7 +1,7 @@
 from guachi.database import dbdict
 import os
 
-class Mapper(object):
+class ConfigMapper(object):
 
     def __init__(self, path):
         self.path = self._path_verify(path)

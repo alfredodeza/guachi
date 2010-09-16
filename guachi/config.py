@@ -2,7 +2,7 @@ from ConfigParser import ConfigParser
 from os.path import isfile
 from pacha.database import Worker
 
-def options(config=None, mapped_options):
+def options(config=None, mapped_options={}, mapped_defaults={}):
     """Instead of calling ConfigParser all over the place
     we gather, read, parse and return valid configuration
     values for any pacha log.utility here, config should
@@ -19,7 +19,7 @@ def options(config=None, mapped_options):
 
     except TypeError:
         if type(config) is dict:
-            configuration = defaults(config)
+            configuration = defaults(config, mapped_defaults)
     
     else:
         try:
@@ -38,7 +38,7 @@ def options(config=None, mapped_options):
                 except KeyError:
                     pass # we will fill any empty values later with config_defaults
             try:
-                configuration = defaults(converted_opts)
+                configuration = defaults(converted_opts, mapped_defaults)
             except Exception, e:
                 print "Couldn't map configuration: %s" % e
 
@@ -48,13 +48,13 @@ def options(config=None, mapped_options):
 
     return configuration
 
-def defaults(config=None, defaults):
+def defaults(config=None, mapped_defaults={}):
     """From the config dictionary it checks missing values and
     adds the defaul ones for them if any"""
     if config == None:
         config = {}
 
-    for key in defaults.keys():
+    for key in mapped_defaults.keys():
         try:
             config[key]
             if config[key] == '':
