@@ -1,6 +1,5 @@
 import os.path
 import sqlite3
-#from sqlite3 import dbapi2 as sqlite
 
 class dbdict(dict):
     
