@@ -189,27 +189,15 @@ guachi.cache = 10
     txt = open('/tmp/guachi/conf_eight.ini', 'w')
     text = """
 [DEFAULT]
-# Middleware Configuration
-guachi.middleware.server_id = 2
-guachi.middleware.application = secondary
-
 # Database (Mongo)
-guachi.db.host = remote.example.com
-guachi.db.port = 00000
+guachi.db.host = example.com 
+guachi.db.port = 
 
 # Web Interface
-guachi.web.host = web.example.com
+guachi.web.host = 
+guachi.web.port = 
 
-# Logging
-guachi.log.level = DEBUG
-guachi.log.datefmt = %H:%M:%S
-guachi.log.format = %(asctime)s %(levelname)s %(name)s  %(message)s    
 
-# Cache
-guachi.cache = 10
-
-# Custom
-guachi.custom.foo = True
 """
     txt.write(text)
     txt.close()
@@ -218,12 +206,12 @@ guachi.custom.foo = True
     text = """
 [DEFAULT]
 # Database (Mongo)
-guachi.db.host = remote.example.com
-guachi.db.port = 00000
+guachi.db.host = 
+guachi.db.port = 
 
 # Web Interface
-guachi.web.host = web.example.com
-guachi.web.port = 80
+guachi.web.host = 
+guachi.web.port = 
 
 """
     txt.write(text)
@@ -281,6 +269,40 @@ class TestConfigOptions(unittest.TestCase):
         actual = options(config={}, mapped_defaults=self.mapped_defaults)
         expected = self.mapped_defaults
         self.assertEqual(actual, expected) 
+
+
+    def test_options_from_file_empty_options(self):
+        """A conf file with empty values should get values filled in"""
+        actual = options('/tmp/guachi/conf_nine.ini', self.mapped_options, self.mapped_defaults)
+        expected = self.mapped_defaults
+        self.assertEqual(actual, expected) 
+
+
+    def test_options_from_file_one_option(self):
+        """A conf file with one value should get values filled in"""
+        actual = options('/tmp/guachi/conf_eight.ini', self.mapped_options, self.mapped_defaults)
+        expected = {
+            'db_host': 'example.com',
+            'db_port': 27017,
+            'web_host': 'localhost',
+            'web_port': '8080',
+            }
+
+        self.assertEqual(actual, expected) 
+
+    
+    def test_options_from_file_empty_defaults(self):
+        """Just one default should not overwrite other config values"""
+        actual = options('/tmp/guachi/conf_eight.ini', self.mapped_options, {})
+        expected = {
+            'db_host': 'example.com',
+            'db_port': '',
+            'web_host': '',
+            'web_port': '',
+            }
+
+        self.assertEqual(actual, expected) 
+
 
 #    def test_options_TypeError(self):
 #        actual = options(config={})

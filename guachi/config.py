@@ -34,11 +34,10 @@ def options(config=None, mapped_options={}, mapped_defaults={}):
             try:
                 configuration = defaults(converted_opts, mapped_defaults)
             except Exception, e:
-                print "Couldn't map configuration: %s" % e
+                return "Couldn't map configuration: %s" % e
 
         except Exception, e:
-            pass
-            print "Couldn't map configuration: %s" % e
+            return "Couldn't map configuration: %s" % e
 
     return configuration
 
