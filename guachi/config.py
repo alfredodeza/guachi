@@ -28,16 +28,14 @@ def options(config=None, mapped_options={}, mapped_defaults={}):
                 try:
                     file_value = file_options[key]
                     converted_opts[value] = file_value
-
                 except KeyError:
                     pass # we will fill any empty values later with config_defaults
             try:
                 configuration = defaults(converted_opts, mapped_defaults)
-            except Exception, e:
-                return "Couldn't map configuration: %s" % e
-
-        except Exception, e:
-            return "Couldn't map configuration: %s" % e
+            except Exception, error:
+                raise OptionConfigurationError(error)
+        except Exception, error:
+            raise OptionConfigurationError(error)
 
     return configuration
 
@@ -56,3 +54,8 @@ def defaults(config=None, mapped_defaults={}):
         except KeyError:
             config[key] = mapped_defaults[key]
     return config
+
+
+class OptionConfigurationError(Exception):
+    """Base class for exceptions in this module."""
+    pass

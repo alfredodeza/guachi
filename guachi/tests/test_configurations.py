@@ -1,7 +1,7 @@
 import unittest
 from os import remove, mkdir
 
-from guachi.config  import options, defaults 
+from guachi.config  import options, defaults, OptionConfigurationError 
 
 def setup():
     try:
@@ -164,24 +164,11 @@ guachi.cache = 10
     txt = open('/tmp/guachi/conf_seven.ini', 'w')
     text = """
 [DEFAULT]
-# Middleware Configuration
-guachi.middleware.server_id = 2
-guachi.middleware.application = secondary
 
 # Database (Mongo)
 guachi.db.host = remote.example.com
-guachi.db.port = 00000
+guachi.db.port = 0
 
-# Web Interface
-guachi.web.host = web.example.com
-
-# Logging
-guachi.log.level = DEBUG
-guachi.log.datefmt = %H:%M:%S
-guachi.log.format = %(asctime)s %(levelname)s %(name)s  %(message)s    
-
-# Cache
-guachi.cache = 10
 """
     txt.write(text)
     txt.close()
@@ -304,204 +291,23 @@ class TestConfigOptions(unittest.TestCase):
         self.assertEqual(actual, expected) 
 
 
-#    def test_options_TypeError(self):
-#        actual = options(config={})
-#        expected = self.defaults
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_empty(self):
-#        actual = options()
-#        expected = self.defaults
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_invalid_file(self):
-#        actual = options('/path/to/invalid/file.txt')
-#        expected = self.defaults
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_typeError(self):
-#        actual = options(['a list should never be passed'])
-#        expected = self.defaults
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_Error_string(self):
-#        actual = options('a string should never be passed')
-#        expected = self.defaults
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini(self):
-#        actual = options('conf.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'web_port': '80',
-#                'cache': '10',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_no_id(self):
-#        actual = options('conf_two.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '1',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '80',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_no_dbhost(self):
-#        actual = options('conf_three.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'localhost',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '80',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_no_dbport(self):
-#        actual = options('conf_four.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': 27017,
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '80',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_noapp(self):
-#        actual = options('conf_five.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'main',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '80',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_no_webhost(self):
-#        actual = options('conf_six.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'localhost',
-#                'cache': '10',
-#                'web_port': '80',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_options_ini_no_webport(self):
-#        actual = options('conf_seven.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '8080',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_custom_plugin(self):
-#        actual = options('conf_eight.ini')
-#        expected = { 
-#                'foo' : 'True',
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '8080',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
-#    def test_custom_plugin_none(self):
-#        """When bad configured it will not display or get parsed"""
-#        actual = options('conf_nine.ini')
-#        expected = { 
-#                'web_user': False,
-#                'plugins': None,
-#                'plugin_path': False,
-#                'server_id': '2',
-#                'db_host': 'remote.example.com',
-#                'db_port': '00000',
-#                'application': 'secondary',
-#                'web_host': 'web.example.com',
-#                'cache': '10',
-#                'web_port': '8080',
-#                'log_level': 'DEBUG',
-#                'log_format': '%(asctime)s %(levelname)s %(name)s  %(message)s',
-#                'log_datefmt' : '%H:%M:%S'
-#                }    
-#        self.assertEqual(actual, expected)
-#
+    def test_options_key_error_passes(self):
+        """When options are missing options() passes on the KeyError"""
+        actual = options('/tmp/guachi/conf_seven.ini', self.mapped_options, self.mapped_defaults)
+        expected = {
+            'db_host': 'remote.example.com',
+            'db_port': '0',
+            'web_host': 'localhost',
+            'web_port': '8080',
+            }
+
+        self.assertEqual(actual, expected) 
+
+        
+    def test_options_from_file_raise_error(self):
+        """Just one default should not overwrite other config values"""
+        self.assertRaises(OptionConfigurationError, options, '/tmp/guachi/conf_eight.ini', self.mapped_options, '')  
+
 
 if __name__ == '__main__':
     unittest.main()
