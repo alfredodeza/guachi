@@ -4,6 +4,25 @@ import unittest
 from guachi import ConfigMapper
 from guachi.database import dbdict
 
+# An example of a default config dict
+DEFAULT_CONFIG = {
+            'frequency': 60,
+            'master': 'False',
+            'host': 'localhost',
+            'ssh_user': 'root',
+            'ssh_port': 22,
+            'hosts_path': '/opt/pacha',
+            'hg_autocorrect': 'True',
+            'log_enable': 'False',
+            'log_path': 'False',
+            'log_level': 'DEBUG',
+            'log_format': '%(asctime)s %(levelname)s %(name)s %(message)s',
+            'log_datefmt' : '%H:%M:%S'
+            }
+
+
+
+
 class test_ConfigMapper(unittest.TestCase):
 
     def setUp(self):
@@ -64,3 +83,38 @@ class test_ConfigMapper(unittest.TestCase):
         actual = foo.get_default_options()
         expected = my_config
         self.assertEqual(actual, expected) 
+
+
+    def test_path_verify_file(self):
+        foo = ConfigMapper('/tmp/foo_guachi.db')
+        actual = foo._path_verify('/tmp/foo_guachi.db')
+        expected = '/tmp/foo_guachi.db'
+        self.assertEqual(actual, expected) 
+
+
+    def test_path_verify_dir(self):
+        foo = ConfigMapper('/tmp')
+        actual = foo._path_verify('/tmp')
+        expected = '/tmp/guachi.db'
+        self.assertEqual(actual, expected) 
+
+        
+    def test_set_config_dict_empty(self):
+        """Pass an empty dict and get defaults back"""
+        foo = ConfigMapper('/tmp')
+        foo.set_config({})
+        db = dbdict('/tmp/guachi.db')
+        actual = db.get_all()
+        expected ={}
+        self.assertEqual(actual, expected) 
+        
+
+    def test_set_config_dict(self):
+        foo = ConfigMapper('/tmp')
+        foo.set_config(DEFAULT_CONFIG)
+        db = dbdict('/tmp/guachi.db')
+        actual = db.get_all()
+        expected = DEFAULT_CONFIG
+        self.assertEqual(actual, expected) 
+ 
+        

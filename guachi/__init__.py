@@ -74,6 +74,4 @@ class ConfigMapper(object):
         if os.path.isdir(path):
             abspath = os.path.abspath(path)
             return abspath+'/guachi.db'
-        else:
-            return False 
 
