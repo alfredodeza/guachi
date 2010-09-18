@@ -40,6 +40,19 @@ class TestDbdict(unittest.TestCase):
         foo['bar'] = 'beer'
         self.assertEqual(foo['bar'], u'beer')
  
+    def test_setitem_update(self):
+        """If it already exists, you need to do an update"""
+        foo = database.dbdict('/tmp/test_guachi')
+        foo['a'] = 1
+        foo['a'] = 2
+        self.assertEqual(foo['a'], 2)
+
+    def test_close_db(self):
+        foo = database.dbdict('/tmp/test_guachi')
+        foo['bar'] = 'beer'
+        foo._close()
+        self.assertRaises(sqlite3.ProgrammingError, foo.__setitem__, 'bar', {'a':'b'})
+
     def test_setitem_typeerror(self):
         foo = database.dbdict('/tmp/test_guachi')
         self.assertRaises(sqlite3.InterfaceError, foo.__setitem__, 'bar', {'a':'b'})
@@ -67,5 +80,12 @@ class TestDbdict(unittest.TestCase):
     def test_integrity_check_true(self):
         foo = database.dbdict('/tmp/test_guachi')
         self.assertTrue(foo._integrity_check())
+
+    def test_integrity_check_false(self):
+        foobar = open('/tmp/test_guachi', 'w')
+        foobar.write('meh')
+        foobar.close()
+        foo = database.dbdict('/tmp/test_guachi')
+        self.assertEquals(foo._integrity_check()[0], 'file is encrypted or is not a database')
 
         

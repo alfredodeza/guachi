@@ -27,11 +27,13 @@ class dbdict(dict):
         self.select_keys = "SELECT key from %s" % self.table
         self.select_all = "SELECT * from %s" % self.table
 
+
     def __getitem__(self, key):
         row = self.con.execute(self.select_value,(key,)).fetchone()
         if not row: raise KeyError
         return row[0]
     
+
     def __setitem__(self, key, item):
         try:
             if self.con.execute(self.select_key, (key,)).fetchone():
@@ -51,6 +53,7 @@ class dbdict(dict):
         else:
              raise KeyError
              
+
     def keys(self):
         return [row[0] for row in self.con.execute(self.select_keys).fetchall()]
 
@@ -66,10 +69,12 @@ class dbdict(dict):
 
     def _integrity_check(self):
         """Make sure we are doing OK"""
-        integrity = self.con.execute("pragma integrity_check").fetchone()
-        if integrity == (u'ok',):
-            return True
-        return False
+        try:
+            integrity = self.con.execute("pragma integrity_check").fetchone()
+            if integrity == (u'ok',):
+                return True
+        except Exception, error:
+            return error
 
     def _close(self):
         self.con.close()

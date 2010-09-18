@@ -67,7 +67,6 @@ class ConfigMapper(object):
         return db._integrity_check()
 
 
-
     def _path_verify(self, path):
         """The need to have valid absolute paths"""
         if not os.path.isdir(path):
