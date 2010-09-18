@@ -7,6 +7,7 @@ class ConfigMapper(object):
     def __init__(self, path):
         self.path = self._path_verify(path)
 
+
     def set_config_options(self, dictionary):
         """Maps your INI configuration keys to dictionary keys"""
         db = dbdict(self.path, table='_guachi_options') 
@@ -20,6 +21,20 @@ class ConfigMapper(object):
         for key, value in dictionary.items():
             db[key] = value
 
+
+    def get_config_options(self, dictionary):
+        """Returns the dictionary that maps INI style options to 
+        dictionary options"""
+        db = dbdict(self.path, table='_guachi_options') 
+        return db.get_all()
+
+
+    def get_default_options(self, dictionary):
+        """Returns the default options we hold"""
+        db = dbdict(self.path, table='_guachi_defaults') 
+        return db.get_all()
+
+
     def set_config(self, configuration=None):
         """Accepts a dictionary or a file to set persistent configurations"""
         # First make sure that whatever we get, gets translated
@@ -30,6 +45,7 @@ class ConfigMapper(object):
             db = dbdict(self.path)
             for key, value in dict_config.items():
                 db[key] = value 
+
 
     def stored(self):
         """Access the DB directly for pay-as-you-go configuration needs
