@@ -129,3 +129,19 @@ class test_ConfigMapper(unittest.TestCase):
         foo.set_config(DEFAULT_CONFIG)
         actual = foo.integrity_check()
         self.assertTrue(actual) 
+
+
+    def test_stored(self):
+        foo = ConfigMapper('/tmp')
+        bar = foo.stored()
+        self.assertEqual(bar, {})
+
+
+    def test_stored_get_data(self):
+        """Verify we can actually get data by using stored"""
+        foo = ConfigMapper('/tmp')
+        bar = foo.stored()
+        bar['a'] = 1
+        self.assertEqual(bar, {'a':1})
+
+
