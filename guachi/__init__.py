@@ -22,14 +22,14 @@ class ConfigMapper(object):
             db[key] = value
 
 
-    def get_config_options(self, dictionary):
+    def get_config_options(self):
         """Returns the dictionary that maps INI style options to 
         dictionary options"""
         db = dbdict(self.path, table='_guachi_options') 
         return db.get_all()
 
 
-    def get_default_options(self, dictionary):
+    def get_default_options(self):
         """Returns the default options we hold"""
         db = dbdict(self.path, table='_guachi_defaults') 
         return db.get_all()
