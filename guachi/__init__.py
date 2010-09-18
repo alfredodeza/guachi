@@ -47,6 +47,12 @@ class ConfigMapper(object):
                 db[key] = value 
 
 
+    def get_config(self):
+        """Returns the full stored configuration values as a dictionary"""
+        db = dbdict(self.path)
+        return db.get_all()
+
+
     def stored(self):
         """Access the DB directly for pay-as-you-go configuration needs
         You get an empty dict but with access to any keys when requested
@@ -60,11 +66,6 @@ class ConfigMapper(object):
         db = dbdict(self.path)
         db._integrity_check()
 
-
-    def configuration(self):
-        """Returns the full stored configuration values as a dictionary"""
-        db = dbdict(self.path)
-        return db.get_all()
 
 
     def _path_verify(self, path):

@@ -21,8 +21,6 @@ DEFAULT_CONFIG = {
             }
 
 
-
-
 class test_ConfigMapper(unittest.TestCase):
 
     def setUp(self):
@@ -117,4 +115,17 @@ class test_ConfigMapper(unittest.TestCase):
         expected = DEFAULT_CONFIG
         self.assertEqual(actual, expected) 
  
-        
+
+    def test_get_config(self):
+        foo = ConfigMapper('/tmp')
+        foo.set_config(DEFAULT_CONFIG)
+        actual = foo.get_config()
+        expected = DEFAULT_CONFIG
+        self.assertEqual(actual, expected) 
+
+
+    def test_integrity_check(self):
+        foo = ConfigMapper('/tmp')
+        foo.set_config(DEFAULT_CONFIG)
+        actual = foo.integrity_check()
+        self.assertTrue(actual) 
