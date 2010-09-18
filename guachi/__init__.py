@@ -64,7 +64,7 @@ class ConfigMapper(object):
     def integrity_check(self):
         """Verify the database is OK"""
         db = dbdict(self.path)
-        db._integrity_check()
+        return db._integrity_check()
 
 
 
