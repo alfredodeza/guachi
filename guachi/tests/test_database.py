@@ -19,7 +19,7 @@ class TestDbdict(unittest.TestCase):
         foo = database.dbdict('/tmp/test_guachi')
 
         self.assertEqual(foo.db_filename, '/tmp/test_guachi')
-        self.assertEqual(foo.table, 'data')
+        self.assertEqual(foo.table, '_guachi_data')
         self.assertEqual(foo.select_value, 'SELECT value FROM data WHERE key=?')
         self.assertEqual(foo.select_key, 'SELECT key FROM data WHERE key=?')
         self.assertEqual(foo.update_value, 'UPDATE data SET value=? WHERE key=?')

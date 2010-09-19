@@ -1,13 +1,13 @@
 import os.path
 import sqlite3
 
-BASE = """CREATE TABLE data (key PRIMARY KEY, value)"""
+BASE = """CREATE TABLE _guachi_data (key PRIMARY KEY, value)"""
 OPT_MAP = """CREATE TABLE _guachi_options (key PRIMARY KEY, value)"""
 DEF_MAP = """CREATE TABLE _guachi_defaults (key PRIMARY KEY, value)""" 
 
 class dbdict(dict):
     
-    def __init__(self, path, table='data'):
+    def __init__(self, path, table='_guachi_data'):
         dict.__init__(self)
         self.table = table
         self.db_filename = path
