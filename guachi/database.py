@@ -46,6 +46,7 @@ class dbdict(dict):
         self.con.commit()
         return dict.__setitem__(self, key, item)
                
+
     def __delitem__(self, key):
         if self.con.execute(self.select_key ,(key,)).fetchone():
             self.con.execute(self.delete_key ,(key,))
@@ -56,6 +57,10 @@ class dbdict(dict):
 
     def keys(self):
         return [row[0] for row in self.con.execute(self.select_keys).fetchall()]
+
+
+    def items(self):
+        return [row for row in self.con.execute(self.select_all).fetchall()]
 
 
     def get_all(self):
@@ -75,6 +80,7 @@ class dbdict(dict):
                 return True
         except Exception, error:
             return error
+
 
     def _close(self):
         self.con.close()
