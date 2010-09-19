@@ -45,6 +45,13 @@ class test_ConfigMapper(unittest.TestCase):
         self.assertEqual(actual, expected) 
 
 
+    def test__call__(self):
+        """ConfigMapper should be callable"""
+        foo = ConfigMapper('/tmp')
+        actual = foo()
+        expected = {}
+        self.assertEqual(actual, expected) 
+
     def test_set_ini_options(self):
         foo = ConfigMapper('/tmp')
         my_config = {'config.db.port':'db_port'}
