@@ -48,7 +48,6 @@ class ConfigMapper(object):
         # First make sure that whatever we get, gets translated
         # into a dictionary 
         dict_config = config.options(configuration, mapped_ini, mapped_defaults)
-        import pdb; pdb.set_trace() 
         if len(dict_config) > 0:
             db = dbdict(self.path)
             for key, value in dict_config.items():
