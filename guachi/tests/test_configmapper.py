@@ -52,6 +52,7 @@ class test_ConfigMapper(unittest.TestCase):
         expected = {}
         self.assertEqual(actual, expected) 
 
+
     def test_set_ini_options(self):
         foo = ConfigMapper('/tmp')
         my_config = {'config.db.port':'db_port'}
