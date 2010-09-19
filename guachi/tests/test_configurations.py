@@ -1,14 +1,16 @@
 import unittest
-from os import remove, mkdir
+from os import remove, mkdir, path
 
 from guachi.config  import options, defaults, OptionConfigurationError 
 
 def setup():
     try:
-        remove('/tmp/guachi')
+        if path.exists('/tmp/guachi'):
+            remove('/tmp/guachi')
+        else:
+            mkdir('/tmp/guachi')
     except Exception:
         pass
-    #mkdir('/tmp/guachi')
 
     txt = open('/tmp/guachi/conf.ini', 'w')
     text = """

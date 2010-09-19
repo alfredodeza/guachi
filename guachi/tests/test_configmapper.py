@@ -45,10 +45,10 @@ class test_ConfigMapper(unittest.TestCase):
         self.assertEqual(actual, expected) 
 
 
-    def test_set_config_options(self):
+    def test_set_ini_options(self):
         foo = ConfigMapper('/tmp')
         my_config = {'config.db.port':'db_port'}
-        foo.set_config_options(my_config)
+        foo.set_ini_options(my_config)
         db = dbdict(path='/tmp/guachi.db', table='_guachi_options')
         expected = my_config
         actual = db.get_all()
@@ -65,12 +65,13 @@ class test_ConfigMapper(unittest.TestCase):
         self.assertEqual(actual, expected) 
 
 
-    def test_get_config_options(self):
+    def test_get_ini_options(self):
         foo = ConfigMapper('/tmp')
         my_config = {'config.db.port':'db_port'}
-        foo.set_config_options(my_config)
-        actual = foo.get_config_options()
-        expected = my_config
+        foo.set_ini_options(my_config)
+        defaults = foo.get_ini_options()
+        actual = defaults['config.db.port']
+        expected = 'db_port'
         self.assertEqual(actual, expected) 
 
 
@@ -78,8 +79,9 @@ class test_ConfigMapper(unittest.TestCase):
         foo = ConfigMapper('/tmp')
         my_config = {'db_port':1234}
         foo.set_default_options(my_config)
-        actual = foo.get_default_options()
-        expected = my_config
+        defaults = foo.get_default_options()
+        actual = defaults['db_port']
+        expected = 1234
         self.assertEqual(actual, expected) 
 
 
@@ -116,10 +118,10 @@ class test_ConfigMapper(unittest.TestCase):
         self.assertEqual(actual, expected) 
  
 
-    def test_get_config(self):
+    def test_get_dict_config(self):
         foo = ConfigMapper('/tmp')
         foo.set_config(DEFAULT_CONFIG)
-        actual = foo.get_config()
+        actual = foo.get_dict_config()
         expected = DEFAULT_CONFIG
         self.assertEqual(actual, expected) 
 
@@ -133,14 +135,14 @@ class test_ConfigMapper(unittest.TestCase):
 
     def test_stored(self):
         foo = ConfigMapper('/tmp')
-        bar = foo.stored()
+        bar = foo.stored_config()
         self.assertEqual(bar, {})
 
 
     def test_stored_get_data(self):
         """Verify we can actually get data by using stored"""
         foo = ConfigMapper('/tmp')
-        bar = foo.stored()
+        bar = foo.stored_config()
         bar['a'] = 1
         self.assertEqual(bar, {'a':1})
 
