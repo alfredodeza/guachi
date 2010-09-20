@@ -29,6 +29,16 @@ class TestIntegration(unittest.TestCase):
         except Exception:
             pass
 
+    def tearDown(self):
+        try:
+            if path.exists('/tmp/guachi'):
+                remove('/tmp/guachi')
+            else:
+                mkdir('/tmp/guachi')
+        except Exception:
+            pass
+
+
 
     def test_access_mapped_configs_empty_dict(self):
         foo = ConfigMapper('/tmp/guachi')

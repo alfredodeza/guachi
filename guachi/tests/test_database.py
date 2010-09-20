@@ -20,11 +20,11 @@ class TestDbdict(unittest.TestCase):
 
         self.assertEqual(foo.db_filename, '/tmp/test_guachi')
         self.assertEqual(foo.table, '_guachi_data')
-        self.assertEqual(foo.select_value, 'SELECT value FROM data WHERE key=?')
-        self.assertEqual(foo.select_key, 'SELECT key FROM data WHERE key=?')
-        self.assertEqual(foo.update_value, 'UPDATE data SET value=? WHERE key=?')
-        self.assertEqual(foo.insert_key_value, 'INSERT INTO data (key,value) VALUES (?,?)')
-        self.assertEqual(foo.delete_key, 'DELETE FROM data WHERE key=?')
+        self.assertEqual(foo.select_value, 'SELECT value FROM _guachi_data WHERE key=?')
+        self.assertEqual(foo.select_key, 'SELECT key FROM _guachi_data WHERE key=?')
+        self.assertEqual(foo.update_value, 'UPDATE _guachi_data SET value=? WHERE key=?')
+        self.assertEqual(foo.insert_key_value, 'INSERT INTO _guachi_data (key,value) VALUES (?,?)')
+        self.assertEqual(foo.delete_key, 'DELETE FROM _guachi_data WHERE key=?')
 
     def test_init_guachi_table(self):
         """Make sure we can check other tables"""
