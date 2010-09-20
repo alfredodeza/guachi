@@ -91,7 +91,8 @@ If you have an INI that looks like:</p>
 </div>
 <p>Then you would need to provide <strong>guachi</strong> with a dictionary that maps the keys above to valid dictionary
 keys. Like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;module.web.host&#39;</span><span class="p">:</span><span class="s">&#39;web_host&#39;</span><span class="p">,</span> <span class="s">&#39;module.web.port&#39;</span><span class="p">:</span><span class="s">&#39;web_port&#39;</span><span class="p">}</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_ini_options</span><span class="p">({</span><span class="s">&#39;module.web.host&#39;</span><span class="p">:</span><span class="s">&#39;web_host&#39;</span><span class="p">,</span> <span class="s">&#39;module.web.port&#39;</span><span class="p">:</span><span class="s">&#39;web_port&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>You are telling <strong>guachi</strong> how to map the INI keys.</p>
@@ -109,11 +110,92 @@ keys. Like:</p>
 run, so if your user doesn&#8217;t set them you can supply those values.</p>
 <p>So you would have a dictionary that maps the INI values from above to <em>actual</em> default values
 for your app, like:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;web_host&#39;</span><span class="p">:</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;web_port&#39;</span><span class="p">:</span><span class="mi">80</span><span class="p">}</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_default_options</span><span class="p">({</span><span class="s">&#39;web_host&#39;</span><span class="p">:</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;web_port&#39;</span><span class="p">:</span><span class="mi">80</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>As you can see, we are no longer using INI keys (e.g. <tt class="docutils literal"><span class="pre">module.web.host</span></tt>) but the new keys
 that we assigned.</p>
+</div>
+<div class="section" id="actual-config-parsing-and-mapping">
+<h2>Actual Config Parsing and Mapping<a class="headerlink" href="#actual-config-parsing-and-mapping" title="Permalink to this headline">¶</a></h2>
+<p>Now that you have INI mappings and default ones, you can put your configurations to work.
+<strong>guachi</strong> has an engine that figures out the keys and values and sets them accordingly.</p>
+<p>You can pass an absolute path to an INI file or a dictionary if you are not dealing with
+files:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="s">&#39;/path/to/conf.ini&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_conf_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;web_host&#39;</span><span class="p">:</span><span class="s">&#39;localhost&#39;</span><span class="p">}</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">my_conf_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lets suppose your user defined <tt class="docutils literal"><span class="pre">web_host</span></tt> and nothing else. If you set defaults, the <tt class="docutils literal"><span class="pre">web_port</span></tt>
+would get filled in.</p>
+<p>There is nothing else to do for <em>saving</em> configurations.</p>
+<p>Behind the scenes <strong>guachi</strong> can tell if you are passing an INI file or a dictionary and maps everything
+according to the settings we added previously.</p>
+</div>
+</div>
+<div class="section" id="working-with-values">
+<h1>Working with values<a class="headerlink" href="#working-with-values" title="Permalink to this headline">¶</a></h1>
+<p>Now that you have everything in... how do you interact with the values?</p>
+<p>Remeber that <strong>guachi</strong> will have all the keys and values but dictionaries will appear (for the most part)
+empty when called.</p>
+<p>This is basically to avoid the problem we are trying to solve: not having fully loaded dictionaries in memory.</p>
+<div class="section" id="getting-ini-options">
+<h2>Getting INI options<a class="headerlink" href="#getting-ini-options" title="Permalink to this headline">¶</a></h2>
+<p>Remember INI options are the options that translate INI style keys to dictionary keys. Let&#8217;s retrieve those
+values that we set before in our Python shell:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get_ini_options</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span>
+<span class="go">{}</span>
+</pre></div>
+</div>
+<p>what happened? The dict is empty!</p>
+<p>Not really, lets try a few dictionary methods on that <tt class="docutils literal"><span class="pre">ini_dict</span></tt> instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;module.web.port&#39;, u&#39;web_port&#39;), (u&#39;module.web.host&#39;, u&#39;web_host&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;module.web.port&#39;, u&#39;module.web.host&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="p">[</span><span class="s">&#39;module.web.host&#39;</span><span class="p">]</span>
+<span class="go">u&#39;web_host&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="p">[</span><span class="s">&#39;module.web.port&#39;</span><span class="p">]</span>
+<span class="go">u&#39;web_port&#39;</span>
+</pre></div>
+</div>
+<p>Everything is there... you just need to interact with it.</p>
+<p>However... we are also including a method to load the dictionary just in case you are
+too paranoid:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;module.web.port&#39;: u&#39;web_port&#39;, u&#39;module.web.host&#39;: u&#39;web_host&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-default-options">
+<h2>Getting Default Options<a class="headerlink" href="#getting-default-options" title="Permalink to this headline">¶</a></h2>
+<p>Very similar as how we interact with INI options (take a look above) but some of the methods
+change:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span><span class="o">.</span><span class="n">get_default_options</span><span class="p">()</span>
+<span class="go">{}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get_default_options</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;web_port&#39;, u&#39;80&#39;), (u&#39;web_host&#39;, u&#39;localhost&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;web_port&#39;, u&#39;web_host&#39;]</span>
+</pre></div>
+</div>
+<p>Again, you have access to everything but it is not a <em>loaded</em> dictionary, but if you must,
+you can load that too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -131,6 +213,12 @@ that we assigned.</p>
 <li><a class="reference internal" href="#database-location">Database Location</a></li>
 <li><a class="reference internal" href="#set-ini-mappings">Set INI mappings</a></li>
 <li><a class="reference internal" href="#set-default-mappings">Set Default mappings</a></li>
+<li><a class="reference internal" href="#actual-config-parsing-and-mapping">Actual Config Parsing and Mapping</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-with-values">Working with values</a><ul>
+<li><a class="reference internal" href="#getting-ini-options">Getting INI options</a></li>
+<li><a class="reference internal" href="#getting-default-options">Getting Default Options</a></li>
 </ul>
 </li>
 </ul>

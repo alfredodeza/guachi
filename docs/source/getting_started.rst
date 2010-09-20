@@ -55,10 +55,10 @@ If you have an INI that looks like::
 Then you would need to provide **guachi** with a dictionary that maps the keys above to valid dictionary 
 keys. Like::
 
-    {'module.web.host':'web_host', 'module.web.port':'web_port'}
+    conf = ConfigMapper('/tmp')
+    conf.set_ini_options({'module.web.host':'web_host', 'module.web.port':'web_port'})
 
 You are telling **guachi** how to map the INI keys.
-
 
 
 Set Default mappings
@@ -76,9 +76,100 @@ run, so if your user doesn't set them you can supply those values.
 So you would have a dictionary that maps the INI values from above to *actual* default values 
 for your app, like::
 
-    {'web_host':'localhost', 'web_port':80}
+    conf = ConfigMapper('/tmp')
+    conf.set_default_options({'web_host':'localhost', 'web_port':80})
 
 As you can see, we are no longer using INI keys (e.g. ``module.web.host``) but the new keys 
 that we assigned.
 
+
+Actual Config Parsing and Mapping
+-----------------------------------
+Now that you have INI mappings and default ones, you can put your configurations to work.
+**guachi** has an engine that figures out the keys and values and sets them accordingly.
+
+You can pass an absolute path to an INI file or a dictionary if you are not dealing with 
+files::
+
+    conf = ConfigMapper('/tmp')
+    conf.set_config('/path/to/conf.ini')
+
+Or::
+
+    my_conf_dict = {'web_host':'localhost'}
+    conf.set_config(my_conf_dict)
+
+Lets suppose your user defined ``web_host`` and nothing else. If you set defaults, the ``web_port``
+would get filled in.
+
+There is nothing else to do for *saving* configurations.
+
+Behind the scenes **guachi** can tell if you are passing an INI file or a dictionary and maps everything 
+according to the settings we added previously.
+
+
+Working with values
+======================
+Now that you have everything in... how do you interact with the values?
+
+Remeber that **guachi** will have all the keys and values but dictionaries will appear (for the most part)
+empty when called.
+
+This is basically to avoid the problem we are trying to solve: not having fully loaded dictionaries in memory.
+
+
+Getting INI options
+-----------------------
+Remember INI options are the options that translate INI style keys to dictionary keys. Let's retrieve those 
+values that we set before in our Python shell::
+
+    >>> conf = ConfigMapper('/tmp')
+    >>> ini_dict = conf.get_ini_options()
+    >>> ini_dict
+    {}
+        
+
+what happened? The dict is empty!
+
+Not really, lets try a few dictionary methods on that ``ini_dict`` instance::
+
+    >>> ini_dict.items()
+    [(u'module.web.port', u'web_port'), (u'module.web.host', u'web_host')]
+    >>> ini_dict.keys()
+    [u'module.web.port', u'module.web.host']
+    >>> ini_dict['module.web.host']
+    u'web_host'
+    >>> ini_dict['module.web.port']
+    u'web_port'
+        
+Everything is there... you just need to interact with it.
+
+However... we are also including a method to load the dictionary just in case you are 
+too paranoid::
+
+    >>> ini_dict.get_all()
+    {u'module.web.port': u'web_port', u'module.web.host': u'web_host'}
+
+
+Getting Default Options
+--------------------------------
+Very similar as how we interact with INI options (take a look above) but some of the methods 
+change::
+
+    >>> conf = ConfigMapper('/tmp')
+    >>> conf.get_default_options()
+    {}
+
+    >>> defaults_dict = conf.get_default_options()
+    >>> defaults_dict.items()
+    [(u'web_port', u'80'), (u'web_host', u'localhost')]
+    >>> defaults_dict.keys()
+    [u'web_port', u'web_host']
+
+Again, you have access to everything but it is not a *loaded* dictionary, but if you must,
+you can load that too::
+
+    >>> defaults_dict.get_all()
+    {u'web_port': u'80', u'web_host': u'localhost'}
+    
 
