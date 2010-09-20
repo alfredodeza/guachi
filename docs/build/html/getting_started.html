@@ -197,6 +197,65 @@ you can load that too:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="getting-configuration-values">
+<h2>Getting Configuration Values<a class="headerlink" href="#getting-configuration-values" title="Permalink to this headline">¶</a></h2>
+<p>Just the method names change in how we access the configuration values, but everything
+we get back behaves the same as before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">stored_config</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span>
+<span class="go">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;web_port&#39;, u&#39;80&#39;), (u&#39;web_host&#39;, u&#39;localhost&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;web_port&#39;, u&#39;web_host&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;web_port&#39;</span><span class="p">]</span>
+<span class="go">u&#39;80&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;web_host&#39;</span><span class="p">]</span>
+<span class="go">u&#39;localhost&#39;</span>
+</pre></div>
+</div>
+<p>As you can see, the default values we assigned at the beginning have been applied and are
+now stored.</p>
+<p>And just as before, you can also load the whole thing in memory if you must:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
+<p>There is a helper method for the configs, since it is the one dictionary you are probably
+going to be using more to load the whole dict:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span><span class="o">.</span><span class="n">get_dict_config</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modifying-values">
+<h2>Modifying Values<a class="headerlink" href="#modifying-values" title="Permalink to this headline">¶</a></h2>
+<p>Do you know how to modify values in a dictionary? then you do not need to read this.</p>
+<p><strong>guachi</strong> objects have the <strong>same</strong> methods as a dictionary, so anything goes!</p>
+<p>Add key values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;bar&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="go">u&#39;bar&#39;</span>
+</pre></div>
+</div>
+<p>Alter values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;foo&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="go">u&#39;foo&#39;</span>
+</pre></div>
+</div>
+<p>Delete:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n-Identifier">&lt;module&gt;</span>
+  File <span class="nb">&quot;guachi/database.py&quot;</span>, line <span class="m">33</span>, in <span class="n-Identifier">__getitem__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">KeyError</span>
+<span class="nc">KeyError</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -219,6 +278,8 @@ you can load that too:</p>
 <li><a class="reference internal" href="#working-with-values">Working with values</a><ul>
 <li><a class="reference internal" href="#getting-ini-options">Getting INI options</a></li>
 <li><a class="reference internal" href="#getting-default-options">Getting Default Options</a></li>
+<li><a class="reference internal" href="#getting-configuration-values">Getting Configuration Values</a></li>
+<li><a class="reference internal" href="#modifying-values">Modifying Values</a></li>
 </ul>
 </li>
 </ul>

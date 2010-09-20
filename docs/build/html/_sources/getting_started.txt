@@ -173,3 +173,65 @@ you can load that too::
     {u'web_port': u'80', u'web_host': u'localhost'}
     
 
+Getting Configuration Values
+----------------------------------
+Just the method names change in how we access the configuration values, but everything 
+we get back behaves the same as before::
+
+    >>> conf_dict = conf.stored_config()
+    >>> conf_dict
+    {}
+    >>> conf_dict.items()
+    [(u'web_port', u'80'), (u'web_host', u'localhost')]
+    >>> conf_dict.keys()
+    [u'web_port', u'web_host']
+
+    >>> conf_dict['web_port']
+    u'80'
+    >>> conf_dict['web_host']
+    u'localhost'
+        
+
+As you can see, the default values we assigned at the beginning have been applied and are 
+now stored.
+
+And just as before, you can also load the whole thing in memory if you must::
+
+    >>> conf_dict.get_all()
+    {u'web_port': u'80', u'web_host': u'localhost'}
+
+There is a helper method for the configs, since it is the one dictionary you are probably 
+going to be using more to load the whole dict::
+
+    >>> conf.get_dict_config()
+    {u'web_port': u'80', u'web_host': u'localhost'}
+    
+
+Modifying Values
+------------------
+Do you know how to modify values in a dictionary? then you do not need to read this.
+
+**guachi** objects have the **same** methods as a dictionary, so anything goes!
+
+Add key values::
+
+    >>> conf_dict['new_value'] = 'bar'
+    >>> conf_dict['new_value'] 
+    u'bar'
+        
+Alter values::
+
+    >>> conf_dict['new_value'] = 'foo'
+    >>> conf_dict['new_value']
+    u'foo'
+
+Delete::
+
+    >>> del conf_dict['new_value']
+    >>> conf_dict['new_value']
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "guachi/database.py", line 33, in __getitem__
+        if not row: raise KeyError
+    KeyError
+
