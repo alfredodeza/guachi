@@ -14,7 +14,6 @@ class DictMatch(object):
 
 
     def options(self):
-        
         # If all fails we will always have default values
         configuration = self.defaults()
 
@@ -24,46 +23,60 @@ class DictMatch(object):
                 return configuration
 
         except TypeError:
+            # if we are getting a ready-to-go dict then we still try 
+            # to do our little translation-and-map thing and if that 
+            # comes out as empty, then we assume keys are already 
+            # translated
             if type(self.config) is dict:
-                configuration = self.defaults(self.config)
+                configuration = self.key_matcher(self.config, return_empty=True)
+                if not configuration:
+                    configuration = self.defaults(self.config)
+                return configuration
+
+            # we could get an object that is dict-like but type(object)
+            # doesn't recognize it as a dict 
+            else:
+                configuration = self.key_matcher(self.config)
                 return configuration
         
-        else:
+        else: # this will get executed *only* if we are seeing a file
             try:
-                converted_opts = {}
+#                converted_opts = {}
                 parser = ConfigParser()
                 parser.read(self.config)
                 file_options = parser.defaults()
 
-                # we are not sure about the section so we 
-                # read the whole thing and loop through the items
-                for key, value in self.mapped_options.items():
-                    try:
-                        file_value = file_options[key]
-                        converted_opts[value] = file_value
-                    except KeyError:
-                        pass # we will fill any empty values later with config_defaults
-                try:
-                    configuration = self.defaults(converted_opts)
-                except Exception, error:
-                    raise OptionConfigurationError(error)
+                configuration = self.key_matcher(file_options)
+#                # we are not sure about the section so we 
+#                # read the whole thing and loop through the items
+#                for key, value in self.mapped_options.items():
+#                    try:
+#                        file_value = file_options[key]
+#                        converted_opts[value] = file_value
+#                    except KeyError:
+#                        pass # we will fill any empty values later with config_defaults
+#                try:
+#                    configuration = self.defaults(converted_opts)
+#                except Exception, error:
+#                    raise OptionConfigurationError(error)
             except Exception, error:
                 raise OptionConfigurationError(error)
 
         return configuration
 
 
-    def key_matcher(self, original, mapper=None):
+    def key_matcher(self, original, return_empty=False):
         converted_opts = {}
-        if mapper == None:
-            mapper = self.mapped_options
 
-        for key, value in mapper.items():
+        for key, value in self.mapped_options.items():
             try:
                 file_value = original[key]
                 converted_opts[value] = file_value
             except KeyError:
                 pass # we will fill any empty values later with config_defaults
+
+        if len(converted_opts) == 0 and return_empty == True:
+            return False
         try:
             configuration = self.defaults(converted_opts)
             return configuration
