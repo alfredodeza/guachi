@@ -1,59 +1,72 @@
 from ConfigParser import ConfigParser
 from os.path import isfile
 
-def options(config=None, mapped_options={}, mapped_defaults={}):
-    
-    # If all fails we will always have default values
-    configuration = defaults()
+class DictMatch(object):
 
-    try:
-        if config == None or isfile(config) == False:
-            configuration = defaults()
-            return configuration
+    def __init__(self,config = None,mapped_options = {},mapped_defaults = {}):
+        self.config = config 
+        self.mapped_options = mapped_options
+        self.mapped_defaults = mapped_defaults
 
-    except TypeError:
-        if type(config) is dict:
-            configuration = defaults(config, mapped_defaults)
-    
-    else:
+    def whatisit(self):
+        """Are you a dict, a file or what?"""
+        pass 
+
+
+    def options(self):
+        
+        # If all fails we will always have default values
+        configuration = self.defaults()
+
         try:
-            converted_opts = {}
-            parser = ConfigParser()
-            parser.read(config)
-            file_options = parser.defaults()
+            if self.config == None or isfile(self.config) == False:
+                configuration = self.defaults()
+                return configuration
 
-            # we are not sure about the section so we 
-            # read the whole thing and loop through the items
-            for key, value in mapped_options.items():
-                try:
-                    file_value = file_options[key]
-                    converted_opts[value] = file_value
-                except KeyError:
-                    pass # we will fill any empty values later with config_defaults
+        except TypeError:
+            if type(self.config) is dict:
+                configuration = self.defaults(self.config)
+                return configuration
+        
+        else:
             try:
-                configuration = defaults(converted_opts, mapped_defaults)
+                converted_opts = {}
+                parser = ConfigParser()
+                parser.read(self.config)
+                file_options = parser.defaults()
+
+                # we are not sure about the section so we 
+                # read the whole thing and loop through the items
+                for key, value in self.mapped_options.items():
+                    try:
+                        file_value = file_options[key]
+                        converted_opts[value] = file_value
+                    except KeyError:
+                        pass # we will fill any empty values later with config_defaults
+                try:
+                    configuration = self.defaults(converted_opts)
+                except Exception, error:
+                    raise OptionConfigurationError(error)
             except Exception, error:
                 raise OptionConfigurationError(error)
-        except Exception, error:
-            raise OptionConfigurationError(error)
 
-    return configuration
+        return configuration
 
 
-def defaults(config=None, mapped_defaults={}):
-    """From the config dictionary it checks missing values and
-    adds the defaul ones for them if any"""
-    if config == None:
-        config = {}
+    def defaults(self, config=None):
+        """From the config dictionary it checks missing values and
+        adds the defaul ones for them if any"""
+        if config == None:
+            return self.mapped_defaults()
 
-    for key in mapped_defaults.keys():
-        try:
-            config[key]
-            if config[key] == '':
-                config[key] = mapped_defaults[key]
-        except KeyError:
-            config[key] = mapped_defaults[key]
-    return config
+        for key in self.mapped_defaults.keys():
+            try:
+                config[key]
+                if config[key] == '':
+                    config[key] = self.mapped_defaults[key]
+            except KeyError:
+                config[key] = self.mapped_defaults[key]
+        return config
 
 
 class OptionConfigurationError(Exception):
