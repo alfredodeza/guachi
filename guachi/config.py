@@ -53,6 +53,24 @@ class DictMatch(object):
         return configuration
 
 
+    def key_matcher(self, original, mapper=None):
+        converted_opts = {}
+        if mapper == None:
+            mapper = self.mapped_options
+
+        for key, value in mapper.items():
+            try:
+                file_value = original[key]
+                converted_opts[value] = file_value
+            except KeyError:
+                pass # we will fill any empty values later with config_defaults
+        try:
+            configuration = self.defaults(converted_opts)
+            return configuration
+        except Exception, error:
+            raise OptionConfigurationError(error)
+
+
     def defaults(self, config=None):
         """From the config dictionary it checks missing values and
         adds the defaul ones for them if any"""
