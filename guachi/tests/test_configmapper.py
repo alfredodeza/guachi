@@ -106,6 +106,24 @@ class test_ConfigMapper(unittest.TestCase):
         expected = '/tmp/guachi.db'
         self.assertEqual(actual, expected) 
 
+    def test_update_config_dict_empty(self):
+        """Pass an empty dict and get defaults back"""
+        foo = ConfigMapper('/tmp')
+        foo.update_config({})
+        db = dbdict('/tmp/guachi.db')
+        actual = db.get_all()
+        expected ={}
+        self.assertEqual(actual, expected) 
+        
+
+    def test_update_config_dict(self):
+        foo = ConfigMapper('/tmp')
+        foo.update_config(DEFAULT_CONFIG)
+        db = dbdict('/tmp/guachi.db')
+        actual = db.get_all()
+        expected = DEFAULT_CONFIG
+        self.assertEqual(actual, expected) 
+ 
         
     def test_set_config_dict_empty(self):
         """Pass an empty dict and get defaults back"""

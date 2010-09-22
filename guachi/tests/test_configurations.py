@@ -3,6 +3,9 @@ from os import remove, mkdir, path
 
 from guachi.config  import DictMatch, OptionConfigurationError 
 
+class MockDict(dict):
+    pass
+
 def setup():
     try:
         if path.exists('/tmp/guachi'):
@@ -259,6 +262,15 @@ class TestConfigOptions(unittest.TestCase):
     def test_options_from_dict(self):
         """Pass a dict with no values and get defaults back"""
         opt = DictMatch(config={}, mapped_defaults=self.mapped_defaults)
+        actual = opt.options()
+        expected = self.mapped_defaults
+        self.assertEqual(actual, expected) 
+
+
+    def test_options_dict_like_object(self):
+        """Pass a dict-like object and make sure we get valid options back"""
+        mock_dict = MockDict() 
+        opt = DictMatch(config=mock_dict, mapped_defaults=self.mapped_defaults)
         actual = opt.options()
         expected = self.mapped_defaults
         self.assertEqual(actual, expected) 

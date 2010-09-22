@@ -55,6 +55,10 @@ class ConfigMapper(object):
                 db[key] = value 
 
 
+    def update_config(self, configuration=None):
+        return self.set_config(configuration)
+
+
     def get_dict_config(self):
         """Returns the full stored configuration values as a dictionary"""
         db = dbdict(self.path)
