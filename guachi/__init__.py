@@ -1,5 +1,5 @@
 from guachi.database import dbdict
-from guachi import config
+from guachi.config import DictMatch
 import os
 
 class ConfigMapper(object):
@@ -47,7 +47,9 @@ class ConfigMapper(object):
 
         # First make sure that whatever we get, gets translated
         # into a dictionary 
-        dict_config = config.options(configuration, mapped_ini, mapped_defaults)
+#        dict_config = config.options(configuration, mapped_ini, mapped_defaults)
+        dict_match = DictMatch(configuration, mapped_ini, mapped_defaults)
+        dict_config = dict_match.options()
         if len(dict_config) > 0:
             db = dbdict(self.path)
             for key, value in dict_config.items():

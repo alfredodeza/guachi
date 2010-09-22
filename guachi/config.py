@@ -3,7 +3,7 @@ from os.path import isfile
 
 class DictMatch(object):
 
-    def __init__(self,config = None,mapped_options = {},mapped_defaults = {}):
+    def __init__(self, config=None, mapped_options={}, mapped_defaults={}):
         self.config = config 
         self.mapped_options = mapped_options
         self.mapped_defaults = mapped_defaults
@@ -88,7 +88,7 @@ class DictMatch(object):
         """From the config dictionary it checks missing values and
         adds the defaul ones for them if any"""
         if config == None:
-            return self.mapped_defaults()
+            return self.mapped_defaults
 
         for key in self.mapped_defaults.keys():
             try:

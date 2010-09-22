@@ -1,7 +1,7 @@
 import unittest
 from os import remove, mkdir, path
 
-from guachi.config  import options, defaults, OptionConfigurationError 
+from guachi.config  import DictMatch, OptionConfigurationError 
 
 def setup():
     try:
@@ -234,42 +234,48 @@ class TestConfigOptions(unittest.TestCase):
 
     def test_options_config_none_empty_defaults(self):
         """No config and no defaults should return an empty dict"""
-        actual = options()
+        opts = DictMatch()
+        actual = opts.options()
         expected = {}
         self.assertEqual(actual, expected)
 
 
     def test_options_config_invalid_empty_defaults(self):
         """Invalid config file and no defaults should return an empty dict"""
-        actual = options(config='/path/to/invalid/file')
+        opts = DictMatch(config='/path/to/invalid/file')
+        actual = opts.options()
         expected = {}
         self.assertEqual(actual, expected)
 
 
     def test_options_config_dict_empty_defaults(self):
         """A dict config and no defaults should return an empty dict"""
-        actual = options(config={})
+        opts = DictMatch(config={})  
+        actual = opts.options(config={})
         expected = {}
         self.assertEqual(actual, expected)
 
 
     def test_options_from_dict(self):
         """Pass a dict with no values and get defaults back"""
-        actual = options(config={}, mapped_defaults=self.mapped_defaults)
+        opt = DictMatch(config={}, mapped_defaults=self.mapped_defaults)
+        actual = opt.options()
         expected = self.mapped_defaults
         self.assertEqual(actual, expected) 
 
 
     def test_options_from_file_empty_options(self):
         """A conf file with empty values should get values filled in"""
-        actual = options('/tmp/guachi/conf_nine.ini', self.mapped_options, self.mapped_defaults)
+        opt = DictMatch('/tmp/guachi/conf_nine.ini', self.mapped_options, self.mapped_defaults)
+        actual = opt.options()
         expected = self.mapped_defaults
         self.assertEqual(actual, expected) 
 
 
     def test_options_from_file_one_option(self):
         """A conf file with one value should get values filled in"""
-        actual = options('/tmp/guachi/conf_eight.ini', self.mapped_options, self.mapped_defaults)
+        opt = DictMatch('/tmp/guachi/conf_eight.ini', self.mapped_options, self.mapped_defaults)
+        actual = opt.options()
         expected = {
             'db_host': 'example.com',
             'db_port': 27017,
@@ -282,7 +288,8 @@ class TestConfigOptions(unittest.TestCase):
     
     def test_options_from_file_empty_defaults(self):
         """Just one default should not overwrite other config values"""
-        actual = options('/tmp/guachi/conf_eight.ini', self.mapped_options, {})
+        opt = DictMatch('/tmp/guachi/conf_eight.ini', self.mapped_options, {})
+        actual = opt.options()
         expected = {
             'db_host': 'example.com',
             'db_port': '',
@@ -295,7 +302,8 @@ class TestConfigOptions(unittest.TestCase):
 
     def test_options_key_error_passes(self):
         """When options are missing options() passes on the KeyError"""
-        actual = options('/tmp/guachi/conf_seven.ini', self.mapped_options, self.mapped_defaults)
+        opt = DictMatch('/tmp/guachi/conf_seven.ini', self.mapped_options, self.mapped_defaults)
+        actual = opt.options()
         expected = {
             'db_host': 'remote.example.com',
             'db_port': '0',
