@@ -56,6 +56,7 @@ class ConfigMapper(object):
 
 
     def update_config(self, configuration=None):
+        """An alias to set_config for readability sake"""
         return self.set_config(configuration)
 
 
