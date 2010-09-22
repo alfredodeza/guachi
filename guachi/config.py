@@ -8,11 +8,6 @@ class DictMatch(object):
         self.mapped_options = mapped_options
         self.mapped_defaults = mapped_defaults
 
-    def whatisit(self):
-        """Are you a dict, a file or what?"""
-        pass 
-
-
     def options(self):
         # If all fails we will always have default values
         configuration = self.defaults()
@@ -41,24 +36,10 @@ class DictMatch(object):
         
         else: # this will get executed *only* if we are seeing a file
             try:
-#                converted_opts = {}
                 parser = ConfigParser()
                 parser.read(self.config)
                 file_options = parser.defaults()
-
                 configuration = self.key_matcher(file_options)
-#                # we are not sure about the section so we 
-#                # read the whole thing and loop through the items
-#                for key, value in self.mapped_options.items():
-#                    try:
-#                        file_value = file_options[key]
-#                        converted_opts[value] = file_value
-#                    except KeyError:
-#                        pass # we will fill any empty values later with config_defaults
-#                try:
-#                    configuration = self.defaults(converted_opts)
-#                except Exception, error:
-#                    raise OptionConfigurationError(error)
             except Exception, error:
                 raise OptionConfigurationError(error)
 

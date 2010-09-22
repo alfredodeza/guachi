@@ -251,7 +251,7 @@ class TestConfigOptions(unittest.TestCase):
     def test_options_config_dict_empty_defaults(self):
         """A dict config and no defaults should return an empty dict"""
         opts = DictMatch(config={})  
-        actual = opts.options(config={})
+        actual = opts.options()
         expected = {}
         self.assertEqual(actual, expected)
 
@@ -315,8 +315,15 @@ class TestConfigOptions(unittest.TestCase):
 
         
     def test_options_from_file_raise_error(self):
-        """Just one default should not overwrite other config values"""
-        self.assertRaises(OptionConfigurationError, options, '/tmp/guachi/conf_eight.ini', self.mapped_options, '')  
+        """Error out if we are passing a string in defaults"""
+        opt = DictMatch('/tmp/guachi/conf_eight.ini', self.mapped_options, '')   
+        self.assertRaises(OptionConfigurationError, opt.options) 
+
+
+    def test_options_raise_error_mapped_options(self):
+        """Error out if we are passing a None object in defaults"""
+        opt = DictMatch('/tmp/guachi/conf_eight.ini', None, self.mapped_defaults)   
+        self.assertRaises(OptionConfigurationError, opt.options) 
 
 
 if __name__ == '__main__':
