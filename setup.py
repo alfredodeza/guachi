@@ -6,7 +6,7 @@ tests_require = ['nose']
 
 setup(
     name = "guachi",
-    version = "0.0.1",
+    version = "0.0.2",
     packages = ['guachi'],
     include_package_data=True,
     package_data = {
@@ -27,6 +27,9 @@ problem with memory.
 **Guachi** not only holds persistent dictionaries on disk, but it also maps 
 INI style keys to dictioanry keys, and can fill in the default values if some 
 of them are missing.
+
+You do not need to know anything about how **guachi** stores the values, just 
+treat it like a regular dictionary!
 """,
    classifiers=[
         'Development Status :: 4 - Beta',

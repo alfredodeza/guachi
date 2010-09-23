@@ -12,7 +12,8 @@ Contents:
    :maxdepth: 2
 
    getting_started.rst
-
+   example_usage.rst
+   other_uses.rst
 
 Persistent Configurations
 ----------------------------
