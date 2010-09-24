@@ -49,7 +49,7 @@ class ConfigMapper(object):
         # into a dictionary 
         dict_match = DictMatch(configuration, mapped_ini, mapped_defaults)
         dict_config = dict_match.options()
-        if len(dict_config) > 0:
+        if len(dict_config.items()) > 0:
             db = dbdict(self.path)
             for key, value in dict_config.items():
                 db[key] = value 
