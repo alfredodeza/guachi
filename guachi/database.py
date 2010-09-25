@@ -1,9 +1,8 @@
-import os.path
 import sqlite3
 
-BASE = """CREATE TABLE _guachi_data (key PRIMARY KEY, value)"""
-OPT_MAP = """CREATE TABLE _guachi_options (key PRIMARY KEY, value)"""
-DEF_MAP = """CREATE TABLE _guachi_defaults (key PRIMARY KEY, value)""" 
+BASE = """CREATE TABLE IF NOT EXISTS _guachi_data (key PRIMARY KEY, value)"""
+OPT_MAP = """CREATE TABLE IF NOT EXISTS _guachi_options (key PRIMARY KEY, value)"""
+DEF_MAP = """CREATE TABLE IF NOT EXISTS _guachi_defaults (key PRIMARY KEY, value)""" 
 
 class dbdict(dict):
     
@@ -11,13 +10,10 @@ class dbdict(dict):
         dict.__init__(self)
         self.table = table
         self.db_filename = path
-        if not os.path.isfile(self.db_filename):
-            self.con = sqlite3.connect(self.db_filename)
-            self.con.execute(BASE)
-            self.con.execute(OPT_MAP)
-            self.con.execute(DEF_MAP)
-        else:
-            self.con = sqlite3.connect(self.db_filename)
+        self.con = sqlite3.connect(self.db_filename)
+        self.con.execute(BASE)
+        self.con.execute(OPT_MAP)
+        self.con.execute(DEF_MAP)
 
         self.select_value = "SELECT value FROM %s WHERE key=?" % self.table 
         self.select_key = "SELECT key FROM %s WHERE key=?" % self.table 

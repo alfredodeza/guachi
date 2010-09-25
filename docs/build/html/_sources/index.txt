@@ -14,6 +14,8 @@ Contents:
    getting_started.rst
    example_usage.rst
    other_uses.rst
+   changelog.rst
+
 
 Persistent Configurations
 ----------------------------
