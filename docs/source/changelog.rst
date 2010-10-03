@@ -3,6 +3,13 @@
 Changelog
 ==========
 
+0.0.5
+--------
+
+ * Minor release with only one fix: more verbose exceptions. Before, KeyError exceptions 
+   where raised without a message. This version should be a bit more explicit as to what
+   is causing the exception.
+
 0.0.4
 -------
 
