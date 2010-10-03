@@ -6,7 +6,7 @@ tests_require = ['nose']
 
 setup(
     name = "guachi",
-    version = "0.0.4",
+    version = "0.0.5",
     packages = ['guachi'],
     include_package_data=True,
     package_data = {
