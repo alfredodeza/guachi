@@ -3,6 +3,12 @@
 Changelog
 ==========
 
+0.0.6
+-----
+ * Adds the possibility of using ``get`` on a lazy dict load. Since the lazy
+   load represents an empty dictionary, you can now run ``my_dict.get('key')``
+   and be able to get a key or ``None`` if nothing is set as default response.
+
 0.0.5
 --------
 
