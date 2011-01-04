@@ -1,4 +1,5 @@
 import unittest
+import shutil
 from os import remove, mkdir, path
 
 from guachi.config  import DictMatch, OptionConfigurationError 
@@ -6,7 +7,7 @@ from guachi.config  import DictMatch, OptionConfigurationError
 class MockDict(dict):
     pass
 
-def setup():
+def create_configs():
     try:
         if path.exists('/tmp/guachi'):
             remove('/tmp/guachi')
@@ -220,6 +221,7 @@ def teardown():
 class TestConfigOptions(unittest.TestCase):
 
     def setUp(self):
+        create_configs()
         self.mapped_options = {
             'guachi.db.host':'db_host',
             'guachi.db.port':'db_port',
@@ -234,6 +236,9 @@ class TestConfigOptions(unittest.TestCase):
             'web_port': '8080',
             }
 
+    def tearDown(self):
+        if path.exists('/tmp/guachi'):
+            shutil.rmtree('/tmp/guachi')
 
     def test_options_config_none_empty_defaults(self):
         """No config and no defaults should return an empty dict"""
@@ -308,7 +313,6 @@ class TestConfigOptions(unittest.TestCase):
             'web_host': '',
             'web_port': '',
             }
-
         self.assertEqual(actual, expected) 
 
 

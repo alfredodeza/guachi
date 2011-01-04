@@ -51,6 +51,14 @@ class dbdict(dict):
              raise KeyError, "key '%s' not found in persistent dictionary" % key 
              
 
+    def get(self, key, default=None):
+        """Since we lazy load the dict we need to re-implement ``get``"""
+        row = self.con.execute(self.select_value,(key,)).fetchone()
+        if not row: 
+            return default
+        return row[0]
+
+
     def keys(self):
         return [row[0] for row in self.con.execute(self.select_keys).fetchall()]
 
