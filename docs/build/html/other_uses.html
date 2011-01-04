@@ -1,0 +1,143 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Other Uses &mdash; guachi v0.0.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="guachi v0.0.5 documentation" href="index.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="Usage Examples" href="example_usage.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example_usage.html" title="Usage Examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="other-uses">
+<span id="id1"></span><h1>Other Uses<a class="headerlink" href="#other-uses" title="Permalink to this headline">¶</a></h1>
+<p>Although <strong>guachi</strong> usually expects dictionary objects as input, it can
+also work with <em>dictionary-like</em> objects.</p>
+<p>This is very common in Web Frameworks like Turbogears and Pylons, where
+configuration gets handled by paste.</p>
+<div class="section" id="turbogears">
+<h2>Turbogears<a class="headerlink" href="#turbogears" title="Permalink to this headline">¶</a></h2>
+<p>Turbogears holds everything in memory in a dictionary-like object which is
+usually accessible if you grab it like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">tg</span> <span class="kn">import</span> <span class="n">config</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">config</span></tt> object looks like a dictionary but it doesn&#8217;t evaluate as one.</p>
+<p><strong>guachi</strong> will still try to loop through the keys and values and map them correctly.</p>
+<p>So if you have a few options parsed by the framework, you should not have any
+issues passing the <tt class="docutils literal"><span class="pre">config</span></tt> object in</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">tg</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">guachi</span> <span class="kn">import</span> <span class="n">ConfigMapper</span>
+
+<span class="n">my_opts</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">my_opts</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Although this section is specific to Turbogears, you should be able to apply the same
+for any other Framework that uses Paste as a configuration manager or anything that
+has a dictioanry-like object.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Other Uses</a><ul>
+<li><a class="reference internal" href="#turbogears">Turbogears</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example_usage.html"
+                        title="previous chapter">Usage Examples</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="changelog.html"
+                        title="next chapter">Changelog</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/other_uses.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example_usage.html" title="Usage Examples"
+             >previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Alfredo Deza.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0b2.
+    </div>
+  </body>
+</html>

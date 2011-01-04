@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &mdash; guachi v0.0.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="guachi v0.0.5 documentation" href="index.html" />
+    <link rel="next" title="Usage Examples" href="example_usage.html" />
+    <link rel="prev" title="guachi’s documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="example_usage.html" title="Usage Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="guachi’s documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<span id="id1"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>The most important thing you need to know is that everything in <strong>guachi</strong> is a dictionary.</p>
+<p>You treat all your data, keys and values, exactly the same as you would with a Python dictionary.</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>There are no dependencies for <strong>guachi</strong> although it is meant to be used with Python versions 2.5 and
+newer.</p>
+<p>If you are using Python 2.4 or older this module will not work since we rely on the Sqlite3 bindings
+present in the standar library.</p>
+<p><strong>guachi</strong> is 100% pure Python library!</p>
+</div>
+<div class="section" id="most-common-scenario">
+<h2>Most Common Scenario<a class="headerlink" href="#most-common-scenario" title="Permalink to this headline">¶</a></h2>
+<p>We will cover here a scenario where you have an INI style configuration file where you need to have
+some values that will eventually get stored, and in the case that some values
+are missing you will fill them with defaults.</p>
+<p>At the end, you will be able to view those configurations and access them on the <em>cheap</em>.</p>
+<p>From now one, we also assume you are importing <tt class="docutils literal"><span class="pre">ConfigMapper</span></tt> class from <strong>guachi</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">guachi</span> <span class="kn">import</span> <span class="n">ConfigMapper</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="database-location">
+<h2>Database Location<a class="headerlink" href="#database-location" title="Permalink to this headline">¶</a></h2>
+<p>Before anything, you need to decide a location for the database. This can be an existing Sqlite3
+instance or a new one. If there isn&#8217;t one <strong>guachi</strong> will create one.</p>
+<p>There are 2 ways you can provide a path:</p>
+<blockquote>
+<ul class="simple">
+<li><cite>/path</cite> : if it is a directory, it will create a database file as <cite>/path/guachi.db</cite></li>
+<li><cite>/path/my_database</cite> : if it is a file it will connect directly without renaming the file.</li>
+</ul>
+</blockquote>
+<p>For simplicity, we will use <cite>/tmp</cite> in the examples that follow, making the actual database location
+<cite>/tmp/guachi.db</cite>.</p>
+</div>
+<div class="section" id="set-ini-mappings">
+<h2>Set INI mappings<a class="headerlink" href="#set-ini-mappings" title="Permalink to this headline">¶</a></h2>
+<p>These mappings are the ones that will <em>translate</em> parsed INI keys into acceptable Python values.
+If you have an INI that looks like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">module</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">localhost</span>
+<span class="n">module</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="mi">80</span>
+</pre></div>
+</div>
+<p>Then you would need to provide <strong>guachi</strong> with a dictionary that maps the keys above to valid dictionary
+keys. Like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_ini_options</span><span class="p">({</span><span class="s">&#39;module.web.host&#39;</span><span class="p">:</span><span class="s">&#39;web_host&#39;</span><span class="p">,</span> <span class="s">&#39;module.web.port&#39;</span><span class="p">:</span><span class="s">&#39;web_port&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>You are telling <strong>guachi</strong> how to map the INI keys.</p>
+</div>
+<div class="section" id="set-default-mappings">
+<h2>Set Default mappings<a class="headerlink" href="#set-default-mappings" title="Permalink to this headline">¶</a></h2>
+<p>If your app needs to have defaults then you need to add values to the defaults dictionary so
+<strong>guachi</strong> knows what keys will need to fill in in case they are missing.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are not interested in assigning default values you can skip this section.
+<strong>guachi</strong> doesn&#8217;t need defaults to run.</p>
+</div>
+<p>From the INI file above, we will assume that your app always needs the web host and the port to
+run, so if your user doesn&#8217;t set them you can supply those values.</p>
+<p>So you would have a dictionary that maps the INI values from above to <em>actual</em> default values
+for your app, like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_default_options</span><span class="p">({</span><span class="s">&#39;web_host&#39;</span><span class="p">:</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;web_port&#39;</span><span class="p">:</span><span class="mi">80</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>As you can see, we are no longer using INI keys (e.g. <tt class="docutils literal"><span class="pre">module.web.host</span></tt>) but the new keys
+that we assigned.</p>
+</div>
+<div class="section" id="actual-config-parsing-and-mapping">
+<h2>Actual Config Parsing and Mapping<a class="headerlink" href="#actual-config-parsing-and-mapping" title="Permalink to this headline">¶</a></h2>
+<p>Now that you have INI mappings and default ones, you can put your configurations to work.
+<strong>guachi</strong> has an engine that figures out the keys and values and sets them accordingly.</p>
+<p>You can pass an absolute path to an INI file or a dictionary if you are not dealing with
+files:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="s">&#39;/path/to/conf.ini&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_conf_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;web_host&#39;</span><span class="p">:</span><span class="s">&#39;localhost&#39;</span><span class="p">}</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">my_conf_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lets suppose your user defined <tt class="docutils literal"><span class="pre">web_host</span></tt> and nothing else. If you set defaults, the <tt class="docutils literal"><span class="pre">web_port</span></tt>
+would get filled in.</p>
+<p>There is nothing else to do for <em>saving</em> configurations.</p>
+<p>Behind the scenes <strong>guachi</strong> can tell if you are passing an INI file or a dictionary and maps everything
+according to the settings we added previously.</p>
+</div>
+</div>
+<div class="section" id="working-with-values">
+<h1>Working with values<a class="headerlink" href="#working-with-values" title="Permalink to this headline">¶</a></h1>
+<p>Now that you have everything in... how do you interact with the values?</p>
+<p>Remeber that <strong>guachi</strong> will have all the keys and values but dictionaries will appear (for the most part)
+empty when called.</p>
+<p>This is basically to avoid the problem we are trying to solve: not having fully loaded dictionaries in memory.</p>
+<div class="section" id="getting-ini-options">
+<h2>Getting INI options<a class="headerlink" href="#getting-ini-options" title="Permalink to this headline">¶</a></h2>
+<p>Remember INI options are the options that translate INI style keys to dictionary keys. Let&#8217;s retrieve those
+values that we set before in our Python shell:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get_ini_options</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span>
+<span class="go">{}</span>
+</pre></div>
+</div>
+<p>what happened? The dict is empty!</p>
+<p>Not really, lets try a few dictionary methods on that <tt class="docutils literal"><span class="pre">ini_dict</span></tt> instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;module.web.port&#39;, u&#39;web_port&#39;), (u&#39;module.web.host&#39;, u&#39;web_host&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;module.web.port&#39;, u&#39;module.web.host&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="p">[</span><span class="s">&#39;module.web.host&#39;</span><span class="p">]</span>
+<span class="go">u&#39;web_host&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="p">[</span><span class="s">&#39;module.web.port&#39;</span><span class="p">]</span>
+<span class="go">u&#39;web_port&#39;</span>
+</pre></div>
+</div>
+<p>Everything is there... you just need to interact with it.</p>
+<p>However... we are also including a method to load the dictionary just in case you are
+too paranoid:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ini_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;module.web.port&#39;: u&#39;web_port&#39;, u&#39;module.web.host&#39;: u&#39;web_host&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-default-options">
+<h2>Getting Default Options<a class="headerlink" href="#getting-default-options" title="Permalink to this headline">¶</a></h2>
+<p>Very similar as how we interact with INI options (take a look above) but some of the methods
+change:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="s">&#39;/tmp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span><span class="o">.</span><span class="n">get_default_options</span><span class="p">()</span>
+<span class="go">{}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">get_default_options</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;web_port&#39;, u&#39;80&#39;), (u&#39;web_host&#39;, u&#39;localhost&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;web_port&#39;, u&#39;web_host&#39;]</span>
+</pre></div>
+</div>
+<p>Again, you have access to everything but it is not a <em>loaded</em> dictionary, but if you must,
+you can load that too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">defaults_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-configuration-values">
+<h2>Getting Configuration Values<a class="headerlink" href="#getting-configuration-values" title="Permalink to this headline">¶</a></h2>
+<p>Just the method names change in how we access the configuration values, but everything
+we get back behaves the same as before:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">stored_config</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span>
+<span class="go">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="go">[(u&#39;web_port&#39;, u&#39;80&#39;), (u&#39;web_host&#39;, u&#39;localhost&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;web_port&#39;, u&#39;web_host&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;web_port&#39;</span><span class="p">]</span>
+<span class="go">u&#39;80&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;web_host&#39;</span><span class="p">]</span>
+<span class="go">u&#39;localhost&#39;</span>
+</pre></div>
+</div>
+<p>As you can see, the default values we assigned at the beginning have been applied and are
+now stored.</p>
+<p>And just as before, you can also load the whole thing in memory if you must:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
+<p>There is a helper method for the configs, since it is the one dictionary you are probably
+going to be using more to load the whole dict:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span><span class="o">.</span><span class="n">get_dict_config</span><span class="p">()</span>
+<span class="go">{u&#39;web_port&#39;: u&#39;80&#39;, u&#39;web_host&#39;: u&#39;localhost&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modifying-values">
+<h2>Modifying Values<a class="headerlink" href="#modifying-values" title="Permalink to this headline">¶</a></h2>
+<p>Do you know how to modify values in a dictionary? then you do not need to read this.</p>
+<p><strong>guachi</strong> objects have the <strong>same</strong> methods as a dictionary, so anything goes!</p>
+<p>Add key values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;bar&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="go">u&#39;bar&#39;</span>
+</pre></div>
+</div>
+<p>Alter values:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;foo&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="go">u&#39;foo&#39;</span>
+</pre></div>
+</div>
+<p>Delete:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf_dict</span><span class="p">[</span><span class="s">&#39;new_value&#39;</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n-Identifier">&lt;module&gt;</span>
+  File <span class="nb">&quot;guachi/database.py&quot;</span>, line <span class="m">33</span>, in <span class="n-Identifier">__getitem__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">KeyError</span>
+<span class="nc">KeyError</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#most-common-scenario">Most Common Scenario</a></li>
+<li><a class="reference internal" href="#database-location">Database Location</a></li>
+<li><a class="reference internal" href="#set-ini-mappings">Set INI mappings</a></li>
+<li><a class="reference internal" href="#set-default-mappings">Set Default mappings</a></li>
+<li><a class="reference internal" href="#actual-config-parsing-and-mapping">Actual Config Parsing and Mapping</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-with-values">Working with values</a><ul>
+<li><a class="reference internal" href="#getting-ini-options">Getting INI options</a></li>
+<li><a class="reference internal" href="#getting-default-options">Getting Default Options</a></li>
+<li><a class="reference internal" href="#getting-configuration-values">Getting Configuration Values</a></li>
+<li><a class="reference internal" href="#modifying-values">Modifying Values</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">guachi&#8217;s documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="example_usage.html"
+                        title="next chapter">Usage Examples</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/getting_started.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="example_usage.html" title="Usage Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="guachi’s documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Alfredo Deza.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0b2.
+    </div>
+  </body>
+</html>

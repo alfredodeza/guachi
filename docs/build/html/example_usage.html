@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Usage Examples &mdash; guachi v0.0.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="guachi v0.0.5 documentation" href="index.html" />
+    <link rel="next" title="Other Uses" href="other_uses.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="other_uses.html" title="Other Uses"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting Started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="usage-examples">
+<span id="example-usage"></span><h1>Usage Examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h1>
+<p>Here we provide a few examples on how to use <strong>guachi</strong> with some applications.</p>
+<p>Lets assume we have a Twitter application and we need to store some things like:</p>
+<blockquote>
+<ul class="simple">
+<li>username (text)</li>
+<li>update frequency (integers)</li>
+<li>load at startup (boolean)</li>
+</ul>
+</blockquote>
+<p>Lets see how our example app can use <strong>guachi</strong> to leverage user configurations.</p>
+<div class="section" id="database-location">
+<h2>Database Location<a class="headerlink" href="#database-location" title="Permalink to this headline">¶</a></h2>
+<p>Before anything else, remember <strong>guachi</strong> uses a single-file database via Sqlite3.
+This means that you need to provide a path for it.</p>
+<p>For our little app we will create it as a hidden file in the users directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span>
+
+<span class="n">home</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;HOME&#39;</span><span class="p">)</span>
+<span class="n">config_db_path</span> <span class="o">=</span> <span class="n">home</span><span class="o">+</span><span class="s">&#39;/.twitter.db&#39;</span>
+</pre></div>
+</div>
+<p>The above in my system resolves to: <tt class="docutils literal"><span class="pre">/Users/alfredo/.twitter.db</span></tt></p>
+</div>
+<div class="section" id="setting-defaults">
+<h2>Setting Defaults<a class="headerlink" href="#setting-defaults" title="Permalink to this headline">¶</a></h2>
+<p>The twitter application needs some defaults to run properly, so lets make sure
+what they are and how we can push them to <strong>guachi</strong>.</p>
+<p>We want the frequency to be set at every 120 seconds and for our app to load
+at startup:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;frequency&#39;</span><span class="p">:</span><span class="mi">120</span><span class="p">,</span> <span class="s">&#39;load&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ini-file">
+<h2>INI File<a class="headerlink" href="#ini-file" title="Permalink to this headline">¶</a></h2>
+<p>This twitter app will have a INI file so the user can make changes to the app.</p>
+<p>The INI file for this app looks like this:</p>
+<div class="highlight-python"><pre>[DEFAULT]
+
+app.twitter.username =
+app.update.frequency =
+app.load.startup =</pre>
+</div>
+<p>And we will be using the following path to refer to it: <tt class="docutils literal"><span class="pre">/Users/alfredo/.twitter.ini</span></tt></p>
+</div>
+<div class="section" id="setting-ini-mappings">
+<h2>Setting INI Mappings<a class="headerlink" href="#setting-ini-mappings" title="Permalink to this headline">¶</a></h2>
+<p>The INI file will be filled with user values, but first, lets mapp those horrible
+long names to short ones so they are easier to read within our app.</p>
+<p>Although this step is entirely optional, it is nice to have shorter names, so lets create
+another dictionary with the names we want:</p>
+<div class="highlight-python"><pre>ini_mappings = {
+    'app.twitter.username' : 'username',
+    'app.update.frequency : 'frequency',
+    'app.twitter.startup' : 'startup'
+    }</pre>
+</div>
+<p>This means that our app will not care about names like <tt class="docutils literal"><span class="pre">app.twitter.username</span></tt> to retrieve
+values, but rather just <tt class="docutils literal"><span class="pre">username</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="setting-our-values">
+<h1>Setting our Values<a class="headerlink" href="#setting-our-values" title="Permalink to this headline">¶</a></h1>
+<p>Now that we have made a few decisions like:</p>
+<blockquote>
+<ul class="simple">
+<li>INI File options</li>
+<li>INI options mappings</li>
+<li>Default options for our app</li>
+<li>Absolute path for the database file</li>
+</ul>
+</blockquote>
+<p>We are ready to set them, and this needs to happen just once (things are persistent here remember?):</p>
+<div class="highlight-python"><pre>from guachi import ConfigMapper
+from os import environ
+
+home = environ.get('HOME')
+config_db_path = home+'/.twitter.db'
+defaults = {'frequency':120, 'load':True}
+ini_mappings = {
+    'app.twitter.username' : 'username',
+    'app.update.frequency : 'frequency',
+    'app.twitter.startup' : 'startup'
+    }
+
+
+conf = ConfigMapper(config_db_path)
+conf.set_default_options(defaults)
+conf.set_ini_options(ini_mappings)</pre>
+</div>
+<p>The code above took care of setting everything for our app, we are ready for some user interaction now.</p>
+<div class="section" id="user-interaction">
+<h2>User Interaction<a class="headerlink" href="#user-interaction" title="Permalink to this headline">¶</a></h2>
+<p>Now that our twitter app has been installed, the user can start adding configuration to
+the INI file. Let&#8217;s take a look at the INI file and how it looks:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">DEFAULT</span><span class="p">]</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">twitter</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">alfredodeza</span>
+<span class="n">app</span><span class="o">.</span><span class="n">update</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">app</span><span class="o">.</span><span class="n">load</span><span class="o">.</span><span class="n">startup</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>Now we have a few things that have changed. We have a username, a different frequency
+and a different setting for the startup option.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">From now on, we will assume you are importing ConfigMapper from guachi to avoid
+redundancy in the examples.</p>
+</div>
+<p>Lets deal with that:</p>
+<div class="highlight-python"><pre>ini_file = ``/Users/alfredo/.twwiter.ini``
+conf = ConfigMapper(config_db_path)
+conf.set_config(ini_file)</pre>
+</div>
+<p>That&#8217;s it! At this point, <strong>guachi</strong> has parsed the config file and stored the values.</p>
+<p>Lets query them calling our keys:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db_conf</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">stored_config</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db_conf</span><span class="p">[</span><span class="s">&#39;frequency&#39;</span><span class="p">]</span>
+<span class="go">60</span>
+</pre></div>
+</div>
+<p>Great, we now are making sure we have our data. We can actually get that value from anywhere
+in our twitter app by calling it this way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">db</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="n">config_db_path</span><span class="p">)</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">stored_config</span><span class="p">()</span>
+
+<span class="n">frequency</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;frequency&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-deafults">
+<h2>Getting Deafults<a class="headerlink" href="#getting-deafults" title="Permalink to this headline">¶</a></h2>
+<p>Above we inspected an INI file with some changed values. But what happens when the user
+has none?</p>
+<p>Since we set our defaults, we can be sure they are right there in case our app needs
+it in some sub-module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="n">config_db_path</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">stored_config</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">conf</span><span class="p">[</span><span class="s">&#39;load&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-values">
+<h2>Updating Values<a class="headerlink" href="#updating-values" title="Permalink to this headline">¶</a></h2>
+<p>What if a user makes changes? We can always save and update what we read from the INI
+file at load time, to make sure we have the latest changes from the user:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">conf</span> <span class="o">=</span> <span class="n">ConfigMapper</span><span class="p">(</span><span class="n">config_db_path</span><span class="p">)</span>
+<span class="n">conf</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">ini_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conclusions">
+<h2>Conclusions<a class="headerlink" href="#conclusions" title="Permalink to this headline">¶</a></h2>
+<p>You should now be able to create and manage an instance of <strong>guachi</strong>. Remember though, that
+although we are storing the values in a database, <strong>guachi</strong> returns dictionary objects,
+so any interaction you want with the keys or values, can be done just as if you were
+dealing with one.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Usage Examples</a><ul>
+<li><a class="reference internal" href="#database-location">Database Location</a></li>
+<li><a class="reference internal" href="#setting-defaults">Setting Defaults</a></li>
+<li><a class="reference internal" href="#ini-file">INI File</a></li>
+<li><a class="reference internal" href="#setting-ini-mappings">Setting INI Mappings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#setting-our-values">Setting our Values</a><ul>
+<li><a class="reference internal" href="#user-interaction">User Interaction</a></li>
+<li><a class="reference internal" href="#getting-deafults">Getting Deafults</a></li>
+<li><a class="reference internal" href="#updating-values">Updating Values</a></li>
+<li><a class="reference internal" href="#conclusions">Conclusions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="getting_started.html"
+                        title="previous chapter">Getting Started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="other_uses.html"
+                        title="next chapter">Other Uses</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/example_usage.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="other_uses.html" title="Other Uses"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getting_started.html" title="Getting Started"
+             >previous</a> |</li>
+        <li><a href="index.html">guachi v0.0.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Alfredo Deza.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0b2.
+    </div>
+  </body>
+</html>
