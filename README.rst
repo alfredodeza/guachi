@@ -7,7 +7,7 @@ Having configurations mapped to dictionaries is really useful, but can create a
 problem with memory.
 
 **Guachi** not only holds persistent dictionaries on disk, but it also maps 
-INI style keys to dictioanry keys, and can fill in the default values if some 
+INI style keys to dictionary keys, and can fill in the default values if some 
 of them are missing.
 
 You do not need to know anything about how **guachi** stores the values, just 
